@@ -69,7 +69,7 @@ historical purposes only.
 			SpiRamSeqReadStart(0, addr);
 			asm("nop");asm("nop");
 			spiram_state = 0;
-			spiram_cursor = addr;
+			spiram_cursor = addr+1;
 			return SpiRamSeqReadU8();
 		}
 		if(spiram_cursor != addr){//current sequential read position doesn't match?
@@ -77,9 +77,10 @@ historical purposes only.
 			asm("nop");asm("nop");
 			SpiRamSeqReadStart(0, addr);
 			asm("nop");asm("nop");
-			spiram_cursor = addr;
+			spiram_cursor = addr+1;
 			return SpiRamSeqReadU8();
 		}
+		spiram_cursor++;
 		return SpiRamSeqReadU8();
 	}
 
@@ -89,7 +90,7 @@ historical purposes only.
 			asm("nop");asm("nop");
 			SpiRamSeqWriteStart(0, addr);
 			spiram_state = 1;
-			spiram_cursor = addr;
+			spiram_cursor = addr+1;
 			asm("nop");asm("nop");
 			SpiRamSeqWriteU8(val);
 			return;
@@ -98,11 +99,13 @@ historical purposes only.
 			SpiRamSeqWriteEnd();
 			asm("nop");asm("nop");
 			SpiRamSeqWriteStart(0, addr);
-			spiram_cursor = addr;
+			spiram_cursor = addr+1;
 			asm("nop");asm("nop");
 			SpiRamSeqWriteU8(val);
 			return;
 		}
+		spiram_cursor++;
+		SpiRamSeqWriteU8(val);
 	}
 #endif
 
